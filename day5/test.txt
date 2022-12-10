@@ -1,0 +1,11 @@
+ x   x   x   x   x  [L]  x  [H] [W]
+ x   x   x   x  [J] [Z] [J] [Q] [Q]
+[S]  x   x   x  [M] [C] [T] [F] [B]
+[P]  x  [H]  x  [B] [D] [G] [B] [P]
+[W]  x  [L] [D] [D] [J] [W] [T] [C]
+[N]  x  [R] [T] [T] [T] [M] [M] [G]
+[J]  x  [Q] [S] [Z] [W] [P] [G] [D]
+[Z]  x  [V] [V] [Q] [M] [L] [N] [R]
+ 1   2   3   4   5   6   7   8   9
+
+move 2 from 1 to 2
