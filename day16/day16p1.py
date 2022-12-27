@@ -1,12 +1,15 @@
 from collections import namedtuple
 import re
 
-filename = 'test.txt'
+filename = 'input.txt'
 minutes = 30
 start_valve = 'AA'
-print_every = 100000
+print_every = 1000000
 
 Valve = namedtuple('Valve', 'fl exits opened')
+Node = namedtuple('Node', 'valves current_valve last_valve'
+                          ' minute pressure')
+
 start_valves = {}
 # 'AA': Valve(0, ('DD', 'II', 'BB'))
 
@@ -20,7 +23,6 @@ def parse_file():
 
 
 parse_file()
-Node = namedtuple('Node', 'valves current_valve minute pressure')
 
 
 def print_state(checked, pressure):
@@ -30,7 +32,7 @@ def print_state(checked, pressure):
 def solve():
     # start at valve AA with 30 mins remaining and 0 pressure
     # valves dict keeps track of valve states
-    wl = [Node(start_valves, 'AA', 30, 0)]
+    wl = [Node(start_valves, 'AA', 'AA', 30, 0)]
     max_pressure = 0
     nodes_checked = 0
     while wl:
@@ -49,25 +51,29 @@ def solve():
 
         else:
             # try opening the valve
-            if not valve.opened:
+            # but not if it's flow rate is 0
+            if not (valve.opened or valve.fl == 0):
                 new_valve = Valve(valve.fl, valve.exits, True)
                 new_dict = node.valves.copy()
                 new_dict[node.current_valve] = new_valve
 
-                new_pressure = node.pressure + (node.minute * valve.fl)
+                new_pressure = node.pressure + ((node.minute - 1) * valve.fl)
 
                 new_node = Node(new_dict, node.current_valve,
+                                node.current_valve,
                                 node.minute - 1, new_pressure)
                 wl.append(new_node)
 
             # try moving to all exits
             for ex in valve.exits:
-                new_node = Node(node.valves, ex,
-                                node.minute - 1, node.pressure)
-                wl.append(new_node)
+                # but not the one we were just at
+                if ex != node.last_valve:
+                    new_node = Node(node.valves, ex, node.current_valve,
+                                    node.minute - 1, node.pressure)
+                    wl.append(new_node)
 
     return max_pressure
 
 
-max_pressure = solve()
-print(f'Final max pressure: {max_pressure}')
+final_max = solve()
+print(f'\nFinal max pressure: {final_max}')
