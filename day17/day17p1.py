@@ -1,8 +1,11 @@
-filename = 'test.txt'
+filename = 'input.txt'
 total_to_drop = 2022
 
 with open(filename) as f:
     jets = list(f.readline().strip())
+
+with open('heights.txt') as f:
+    heights = [int(line.strip()) for line in f.readlines()]
 
 rows = ['#######']
 
@@ -90,6 +93,16 @@ def add_to_rows(shape, height):
         height += 1
 
 
+def can_drop(shape, height):
+    for row in shape:
+        if height > 0:
+            return True
+        if overlap(row, rows[height-1]):
+            return False
+        height += 1
+    return True
+
+
 def drop_shape():
     shape = shapes.pop(0)
     shapes.append(shape)
@@ -101,17 +114,25 @@ def drop_shape():
         shape = move(shape, height)
 
         # if it can be dropped, drop it, otherwise add it to rows and stop
-        if height > 0 or not overlap(shape[0], rows[height-1]):
+        if can_drop(shape, height):
             height -= 1
         else:
             add_to_rows(shape, height)
             break
 
 
-for _ in range(20):
+for i in range(total_to_drop):
     drop_shape()
-    print(f'Height: {len(rows) - 1}')
-    print_rows()
+    # print_rows()
+
+    # height = len(rows) - 1
+    # check_height = heights.pop(0)
+    # if height != check_height:
+    #     print(f'At block {i+1} height {height} != {check_height}')
+
+    # print(f'Height: {height}')
+    # print_rows()
+
 
 final = len(rows) - 1
 print(f'Final height: {final}')
