@@ -4,9 +4,6 @@ total_to_drop = 2022
 with open(filename) as f:
     jets = list(f.readline().strip())
 
-with open('heights.txt') as f:
-    heights = [int(line.strip()) for line in f.readlines()]
-
 rows = ['#######']
 
 shapes = [['..####.'],
@@ -124,15 +121,6 @@ def drop_shape():
 for i in range(total_to_drop):
     drop_shape()
     # print_rows()
-
-    # height = len(rows) - 1
-    # check_height = heights.pop(0)
-    # if height != check_height:
-    #     print(f'At block {i+1} height {height} != {check_height}')
-
-    # print(f'Height: {height}')
-    # print_rows()
-
 
 final = len(rows) - 1
 print(f'Final height: {final}')
