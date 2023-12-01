@@ -67,6 +67,16 @@ def next_nodes(node, bp) -> List[Node]:
     return new_nodes
 
 
+def worse_than_best(node, rsf):
+    """Returns true iff the node cannot produce more than rsf geodes by building a geode robot every minute."""
+    geodes = node.resources.geode
+    robots = node.robots.geode
+    for i in range(node.minute, MAX_MINUTES):
+        geodes += robots
+        robots += 1
+    return geodes < rsf
+
+
 def max_geodes(bp: Blueprint) -> int:
     # create initial node with one ore robot
     start = Node(0, Robots(1, 0, 0, 0), Resources(0, 0, 0, 0))
@@ -78,11 +88,12 @@ def max_geodes(bp: Blueprint) -> int:
     while todo:
         curr: Node = todo.popleft()
         if curr.minute > max_minute:
-            print("\rMinute {}".format(curr.minute))
+            print("Minute {}".format(curr.minute))
+            print("Max Geodes: {}".format(rsf))
             max_minute = curr.minute
         if curr.minute > MAX_MINUTES:
             rsf = max(rsf, curr.resources.geode)
-        else:
+        elif not worse_than_best(curr, rsf):
             todo.extend(next_nodes(curr, bp))
     return rsf
 
