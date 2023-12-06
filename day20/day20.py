@@ -1,5 +1,5 @@
 # CONSTANTS
-
+KEY = 811589153
 
 # STRUCTURES
 
@@ -9,23 +9,43 @@
 
 # MAIN
 def mix(nums, idx, locs):
-    print(nums[idx], nums)
-    new_idx = (idx + nums[idx])
-    if new_idx <= 0:
-        new_idx -= 1
-    if new_idx >= len(nums):
-        new_idx += 1
-    new_idx %= len(nums)
-    if idx < new_idx:
-        for i in range(idx, new_idx):
-            next_i = (i + 1) % len(nums)
-            nums[i], nums[next_i] = nums[next_i], nums[i]
-            locs[i], locs[next_i] = locs[next_i], locs[i]
-    else:
-        for i in range(idx, new_idx, -1):
-            next_i = (i - 1) % len(nums)
-            nums[i], nums[next_i] = nums[next_i], nums[i]
-            locs[i], locs[next_i] = locs[next_i], locs[i]
+    n = nums[idx]
+    for _ in range(abs(n)):
+        if n > 0 and idx == len(nums) - 1:
+            # rotate right then swap right
+            nums.insert(0, nums.pop())
+            locs.insert(0, locs.pop())
+            idx = 0
+            nums[idx], nums[idx+1] = nums[idx+1], nums[idx]
+            locs[idx], locs[idx+1] = locs[idx+1], locs[idx]
+            idx = 1
+        elif n < 0 and idx == 0:
+            # rotate left then swap left
+            nums.append(nums.pop(0))
+            locs.append(locs.pop(0))
+            idx = len(nums) - 1
+            nums[idx], nums[idx-1] = nums[idx-1], nums[idx]
+            locs[idx], locs[idx-1] = locs[idx-1], locs[idx]
+            idx = len(nums) - 2
+        elif n > 0:
+            # swap right then rotate right if necessary
+            nums[idx], nums[idx+1] = nums[idx+1], nums[idx]
+            locs[idx], locs[idx+1] = locs[idx+1], locs[idx]
+            idx += 1
+            if idx == len(nums) - 1:
+                nums.insert(0, nums.pop())
+                locs.insert(0, locs.pop())
+                idx = 0
+        elif n < 0:
+            # swap left then rotate left if necessary
+            nums[idx], nums[idx-1] = nums[idx-1], nums[idx]
+            locs[idx], locs[idx-1] = locs[idx-1], locs[idx]
+            idx -= 1
+            if idx == 0:
+                nums.append(nums.pop(0))
+                locs.append(locs.pop(0))
+                idx = len(nums) - 1
+    print(n, nums, locs)
 
 
 def coords(nums):
@@ -49,13 +69,20 @@ def part1(lines) -> int:
 
 
 def part2(lines) -> int:
-    return 0
+    nums = [int(n) * KEY for n in lines]
+    locs = [i for i in range(len(nums))]
+    for _ in range(10):
+        print('round')
+        for i in range(len(nums)):
+            idx = locs.index(i)
+            mix(nums, idx, locs)
+    return coords(nums)
 
 
 def main():
     with open("test.txt") as f:
-        print("Part 1 Test: " + str(part1(f.readlines())))
-        # print("Part 2 Test: " + str(part2(f.readlines())))
+        # print("Part 1 Test: " + str(part1(f.readlines())))
+        print("Part 2 Test: " + str(part2(f.readlines())))
     with open("input.txt") as f:
         pass
         # print("Part 1 Input: " + str(part1(f.readlines())))
