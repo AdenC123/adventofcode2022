@@ -17,6 +17,13 @@ FACING_PASS = {
     UP: 3
 }
 
+FACING_PRINT = {
+    RIGHT: '>',
+    DOWN: 'v',
+    LEFT: '<',
+    UP: '^'
+}
+
 NEXT_FACING_RIGHT = {
     UP: RIGHT,
     RIGHT: DOWN,
@@ -44,6 +51,8 @@ def get_next_pos(pos, steps, facing, graph) -> Point:
         if next_val == '#':
             # stop early
             return pos
+        else:
+            graph[pos.y] = graph[pos.y][:pos.x] + FACING_PRINT[facing] + graph[pos.y][pos.x+1:]
         pos = next_pos
     return pos
 
@@ -56,6 +65,7 @@ def part1(lines) -> int:
         graph[i] += ' ' * (max_len - len(graph[i]))
     # do instructions
     pos = Point(graph[0].index('.'), 0)
+    graph[pos.y] = graph[pos.y][:pos.x] + '>' + graph[pos.y][pos.x+1:]
     facing = RIGHT
     path = lines[-1]
     while path:
@@ -69,6 +79,9 @@ def part1(lines) -> int:
         elif path[0] == 'L':
             facing = NEXT_FACING_LEFT[facing]
             path = path[1:]
+    graph[pos.y] = graph[pos.y][:pos.x] + '*' + graph[pos.y][pos.x+1:]
+    for row in graph:
+        print(row)
     return ((pos.y+1) * 1000) + ((pos.x+1) * 4) + FACING_PASS[facing]
 
 
