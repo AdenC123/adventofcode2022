@@ -72,7 +72,7 @@ def part2(lines) -> int:
     nums = [int(n) * KEY for n in lines]
     locs = [i for i in range(len(nums))]
     for _ in range(10):
-        print('round')
+        print('round: ' + str(nums))
         for i in range(len(nums)):
             idx = locs.index(i)
             mix(nums, idx, locs)
